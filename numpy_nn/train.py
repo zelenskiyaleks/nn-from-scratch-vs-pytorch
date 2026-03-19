@@ -3,6 +3,8 @@ from layers import Linear
 from activations import ReLU
 from loss import MSELoss
 from model import Sequential
+import matplotlib.pyplot as plt
+import os
 
 def train():
     X = np.random.randn(100, 2)
@@ -16,10 +18,13 @@ def train():
 
     loss_fn = MSELoss()
     lr = 0.01
+    losses = []
 
     for epoch in range(200):
         out = model.forward(X)
         loss = loss_fn.forward(out, y)
+
+        losses.append(loss)
 
         grad = loss_fn.backward()
         model.backward(grad)
@@ -30,3 +35,14 @@ def train():
 
         if epoch % 20 == 0:
             print(f"Epoch {epoch}, Loss: {loss:.4f}")
+    
+    plt.figure(figsize=(8, 5))
+    plt.plot(losses)
+    plt.grid(True)
+    plt.title("Training Loss")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    
+    save_path = os.path.join(os.path.dirname(__file__), "..", "results", "loss_curve.png")
+    plt.savefig(save_path)
+    plt.show()
